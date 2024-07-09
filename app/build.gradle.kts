@@ -1,6 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.detekt)
+}
+
+detekt {
+    allRules = true
+    buildUponDefaultConfig = true
 }
 
 android {
@@ -63,4 +69,7 @@ dependencies {
     debugImplementation(libs.ui.tooling)
     debugImplementation(libs.ui.test.manifest)
     implementation(libs.wear.tooling.preview)
+
+    detektPlugins(libs.detekt.formatting)
+    detektPlugins(libs.kiolk.detekt.rules)
 }

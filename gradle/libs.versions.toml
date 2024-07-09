@@ -1,5 +1,7 @@
 [versions]
 agp = "8.6.0-alpha08"
+detektFormatting = "1.23.1"
+kiolkDetektRules = "1.0.5"
 kotlin = "1.9.0"
 playServicesWearable = "18.0.0"
 composeBom = "2024.04.01"
@@ -8,8 +10,11 @@ composeFoundation = "1.2.1"
 activityCompose = "1.8.0"
 coreSplashscreen = "1.0.1"
 wearToolingPreview = "1.0.0"
+detekt = "1.23.1"
 
 [libraries]
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormatting" }
+kiolk-detekt-rules = { module = "io.github.kiolk:kiolk-detekt-rules", version.ref = "kiolkDetektRules" }
 play-services-wearable = { group = "com.google.android.gms", name = "play-services-wearable", version.ref = "playServicesWearable" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 ui = { group = "androidx.compose.ui", name = "ui" }
@@ -26,4 +31,5 @@ wear-tooling-preview = { module = "androidx.wear:wear-tooling-preview", version.
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 
