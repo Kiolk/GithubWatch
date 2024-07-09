@@ -1,0 +1,8 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>MagicNumber:ChartScreen.kt$100</ID>
+    <ID>UnusedPrivateProperty:WeekRow.kt$val boxWithConstraintsScope = this</ID>
+  </CurrentIssues>
+</SmellBaseline>

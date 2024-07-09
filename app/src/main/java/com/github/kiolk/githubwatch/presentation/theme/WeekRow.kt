@@ -64,7 +64,8 @@ fun WeekRow() {
                 Box(modifier = Modifier.width(2.dp))
 //            Text(text = "Jun")
             }
-        })
+        }
+    )
 }
 
 @Preview(device = SMALL_ROUND, showSystemUi = true)
