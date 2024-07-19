@@ -4,5 +4,5 @@ import com.github.kiolk.githubwatch.data.statistics.models.ChartDataModel
 
 interface StatisticsDataSource {
 
-    suspend fun getUserStatistics(): ChartDataModel
+    suspend fun getUserStatistics(userName: String): ChartDataModel
 }

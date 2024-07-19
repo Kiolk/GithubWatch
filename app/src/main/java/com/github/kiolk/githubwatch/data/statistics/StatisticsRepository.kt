@@ -4,5 +4,5 @@ import com.github.kiolk.githubwatch.domain.models.ChartData
 
 interface StatisticsRepository {
 
-    suspend fun getUserStatistics(): ChartData
+    suspend fun getUserStatistics(userName: String): ChartData
 }

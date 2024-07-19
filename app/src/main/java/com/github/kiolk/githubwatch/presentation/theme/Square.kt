@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.tooling.preview.devices.WearDevices.SMALL_ROUND
 
 @Composable
-fun Square(color: Color = Color.White, modifier: Modifier = Modifier) {
+fun Square(color: Color?, modifier: Modifier = Modifier) {
     Box(
         modifier
             .aspectRatio(1f)
             .clip(RoundedCornerShape(2.dp))
-            .background(color)
+            .background(color ?: Color.Transparent)
     )
 }
 

@@ -27,7 +27,7 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import androidx.wear.tooling.preview.devices.WearDevices.SMALL_ROUND
 import com.github.kiolk.githubwatch.R
-import com.github.kiolk.githubwatch.presentation.screens.chart.ChartScreen
+import com.github.kiolk.githubwatch.presentation.screens.chart.settings.SettingsScreen
 import com.github.kiolk.githubwatch.presentation.theme.GitHubWatchTheme
 
 class MainActivity : ComponentActivity() {
@@ -58,10 +58,8 @@ fun WearApp() {
                 .background(MaterialTheme.colors.background),
             contentAlignment = Alignment.Center
         ) {
-            ChartScreen()
-//            Square(Color.Red)
-//            TimeText()
-//            Greeting(greetingName = greetingName)
+//            ChartScreen()
+            SettingsScreen()
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.github.kiolk.githubwatch.di
 
+import com.apollographql.apollo3.ApolloClient
+import com.apollographql.apollo3.network.okHttpClient
 import com.github.kiolk.githubwatch.data.statistics.datasource.StatisticsApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -25,6 +27,13 @@ val networkModule = module {
     single<OkHttpClient> {
         OkHttpClient.Builder()
             .addInterceptor(get<Interceptor>())
+            .build()
+    }
+
+    single<ApolloClient> {
+        ApolloClient.Builder()
+            .serverUrl("https://api.github.com/graphql")
+            .okHttpClient(get<OkHttpClient>())
             .build()
     }
 
