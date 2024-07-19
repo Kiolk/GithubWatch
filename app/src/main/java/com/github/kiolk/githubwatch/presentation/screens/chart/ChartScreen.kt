@@ -6,17 +6,19 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.scrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.rotary.onRotaryScrollEvent
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.ExperimentalWearFoundationApi
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
@@ -24,16 +26,17 @@ import androidx.wear.compose.foundation.rememberActiveFocusRequester
 import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
-import androidx.wear.compose.material.SwipeToDismissValue
 import androidx.wear.tooling.preview.devices.WearDevices.SMALL_ROUND
-import com.github.kiolk.githubwatch.presentation.theme.GitHubWatchTheme
 import com.github.kiolk.githubwatch.presentation.screens.chart.view.WeekRow
+import com.github.kiolk.githubwatch.presentation.screens.navigation.SETTINGS
+import com.github.kiolk.githubwatch.presentation.theme.GitHubWatchTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalWearFoundationApi::class)
+@Suppress("LongMethod")
 @Composable
-fun ChartScreen() {
+fun ChartScreen(navController: NavHostController) {
     val chartViewModel: ChartViewModel = koinViewModel()
     val chartData by chartViewModel.chartData.collectAsState()
     val isLoading by chartViewModel.isLoading.collectAsState()
@@ -76,10 +79,24 @@ fun ChartScreen() {
                         CircularProgressIndicator()
                     }
                 } else {
-                    items(size) { index ->
-                        WeekRow(chartData.weeks[size - 1 - index])
+                    items(size + 1) { index ->
+                        if (index == size) {
+                            Button(onClick = {
+                                navController.navigate(SETTINGS)
+                            }) { Text("Settings") }
+                        } else {
+                            WeekRow(chartData.weeks[size - 1 - index])
+                        }
                     }
                 }
+            }
+        }
+    }
+
+    chartViewModel.uiState.openSettings.let { openSettings ->
+        LaunchedEffect(openSettings) {
+            if (openSettings) {
+                navController.navigate(SETTINGS)
             }
         }
     }

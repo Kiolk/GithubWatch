@@ -93,6 +93,7 @@ dependencies {
     implementation(libs.kotlinx.datetime)
 
     implementation (libs.swiperefreshlayout)
+    implementation (libs.navigation.compose)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)

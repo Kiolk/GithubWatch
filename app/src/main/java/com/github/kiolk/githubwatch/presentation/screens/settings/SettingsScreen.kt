@@ -1,4 +1,4 @@
-package com.github.kiolk.githubwatch.presentation.screens.chart.settings
+package com.github.kiolk.githubwatch.presentation.screens.settings
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,16 +18,17 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Scaffold
+import com.github.kiolk.githubwatch.presentation.screens.navigation.CHART
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(navController: NavHostController) {
     val settingsViewModel: SettingsViewModel = koinViewModel()
-    val userName = settingsViewModel.userName.collectAsState()
     val focusRequester = remember { FocusRequester() }
 
     val state = rememberScalingLazyListState()
@@ -43,7 +44,7 @@ fun SettingsScreen() {
                             .padding(horizontal = 10.dp)
                     ) {
                         TextField(
-                            value = userName.value,
+                            value = settingsViewModel.uiState.userName,
                             onValueChange = { settingsViewModel.onUserNameChanged(it) },
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 imeAction = ImeAction.Done
@@ -65,6 +66,14 @@ fun SettingsScreen() {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    settingsViewModel.uiState.onSaved.let { onSaved ->
+        LaunchedEffect(onSaved) {
+            if (onSaved) {
+                navController.navigate(CHART)
             }
         }
     }

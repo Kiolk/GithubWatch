@@ -1,7 +1,11 @@
 package com.github.kiolk.githubwatch.presentation.screens.chart
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.kiolk.githubwatch.data.settings.SettingsRepository
 import com.github.kiolk.githubwatch.data.statistics.StatisticsRepository
 import com.github.kiolk.githubwatch.domain.models.ChartData
 import com.github.kiolk.githubwatch.domain.models.DayStatistic
@@ -14,7 +18,10 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDate
 import java.util.Locale
 
-class ChartViewModel(private val statisticsRepository: StatisticsRepository) : ViewModel() {
+class ChartViewModel(
+    private val settingsRepository: SettingsRepository,
+    private val statisticsRepository: StatisticsRepository
+) : ViewModel() {
 
     private val _chartData = MutableStateFlow(ChartModel(weeks = emptyList()))
     val chartData = _chartData.asStateFlow()
@@ -22,15 +29,24 @@ class ChartViewModel(private val statisticsRepository: StatisticsRepository) : V
     private val _isLoading = MutableStateFlow(true)
     val isLoading = _isLoading.asStateFlow()
 
+    var uiState by mutableStateOf(UiState())
+        private set
+
     init {
         fetchChartData()
     }
 
     private fun fetchChartData() {
         viewModelScope.launch {
-            val chartData = statisticsRepository.getUserStatistics("Kiolk")
-            _chartData.emit(chartData.toChartModel())
-            _isLoading.value = false
+            val userName = settingsRepository.getUserName()
+
+            if (userName.isEmpty()) {
+                uiState = uiState.copy(openSettings = true)
+            } else {
+                val chartData = statisticsRepository.getUserStatistics(userName)
+                _chartData.emit(chartData.toChartModel())
+                _isLoading.value = false
+            }
         }
     }
 
@@ -39,6 +55,12 @@ class ChartViewModel(private val statisticsRepository: StatisticsRepository) : V
         fetchChartData()
     }
 }
+
+data class UiState(
+    val isLoading: Boolean = false,
+    val chartData: ChartData = ChartData(),
+    val openSettings: Boolean = false
+)
 
 private fun ChartData.toChartModel(): ChartModel {
     val list: List<DayStatistic> = this.weeks.flatMap { it.contributionDays }

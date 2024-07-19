@@ -2,6 +2,7 @@ package com.github.kiolk.githubwatch.di
 
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
+import com.github.kiolk.githubwatch.data.networking.AuthorizationInterceptor
 import com.github.kiolk.githubwatch.data.statistics.datasource.StatisticsApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
