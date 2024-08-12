@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -17,6 +20,13 @@ apollo {
         schemaFile.set(file("src/main/graphql/schema.graphqls"))
     }
 }
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+localProperties.load(FileInputStream(localPropertiesFile))
+
+val privateKey: String = localProperties.getProperty("private_key")
+val privateAccessToken: String = localProperties.getProperty("private_acess_token")
 
 android {
     namespace = "com.github.kiolk.githubwatch"
@@ -41,6 +51,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "PRIVATE_KEY", "\"${privateKey}\"")
+            buildConfigField("String", "PRIVATE_ACCESS_TOKEN", "\"${privateAccessToken}\"")
+        }
+        debug {
+            buildConfigField("String", "PRIVATE_KEY", "\"${privateKey}\"")
+            buildConfigField("String", "PRIVATE_ACCESS_TOKEN", "\"${privateAccessToken}\"")
         }
     }
     compileOptions {
@@ -52,6 +68,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

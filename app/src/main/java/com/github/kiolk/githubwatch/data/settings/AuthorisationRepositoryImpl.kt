@@ -1,5 +1,6 @@
 package com.github.kiolk.githubwatch.data.settings
 
+import com.github.kiolk.githubwatch.BuildConfig
 import com.github.kiolk.githubwatch.data.settings.datasource.AuthorisationDataSource
 import com.github.kiolk.githubwatch.data.settings.datasource.SettingsDataSource
 import kotlinx.datetime.Clock
@@ -12,14 +13,19 @@ class AuthorisationRepositoryImpl(
 
     override suspend fun getAccessToken(): String {
         val token = settingsDataSource.getAccessToken()
-        if (token.token.isEmpty() || isTokenExpired(token.expiresAt)) {
+
+        if (BuildConfig.DEBUG) {
+            return BuildConfig.PRIVATE_ACCESS_TOKEN
+        }
+
+        return if (token.token.isEmpty() || isTokenExpired(token.expiresAt)) {
             val installationModel = authorisationDataSource.getAvailableInstallations()
             val accessTokenModel = authorisationDataSource.getAccessToken(installationModel.id)
             settingsDataSource.setAccessToken(accessTokenModel)
 
-            return accessTokenModel.token
+            accessTokenModel.token
         } else {
-            return token.token
+            token.token
         }
     }
 
