@@ -2,6 +2,7 @@
 agp = "8.6.0-alpha08"
 graphql = "3.8.2"
 detektFormatting = "1.23.1"
+jjwt = "0.12.6"
 kiolkDetektRules = "1.0.5"
 koinAndroidxCompose = "3.5.6"
 koinTest = "3.4.2"
@@ -30,6 +31,7 @@ material3Android = "1.2.1"
 apollo-coroutines-support = { module = "com.apollographql.apollo3:apollo-coroutines-support", version.ref = "graphql" }
 apollo-runtime = { module = "com.apollographql.apollo3:apollo-runtime", version.ref = "graphql" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormatting" }
+jjwt = { module = "io.jsonwebtoken:jjwt", version.ref = "jjwt" }
 kiolk-detekt-rules = { module = "io.github.kiolk:kiolk-detekt-rules", version.ref = "kiolkDetektRules" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koinAndroidxCompose" }
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinAndroidxCompose" }
