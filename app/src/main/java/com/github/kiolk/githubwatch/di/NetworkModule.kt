@@ -3,6 +3,8 @@ package com.github.kiolk.githubwatch.di
 import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.network.okHttpClient
 import com.github.kiolk.githubwatch.data.networking.AuthorizationInterceptor
+import com.github.kiolk.githubwatch.data.networking.BaseAuthorizationInterceptor
+import com.github.kiolk.githubwatch.data.settings.datasource.AuthorisationApi
 import com.github.kiolk.githubwatch.data.statistics.datasource.StatisticsApi
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import kotlinx.serialization.json.Json
@@ -10,41 +12,79 @@ import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 
+private const val LOGGING_INTERCEPTOR = "logging"
+private const val AUTHORIZATION_INTERCEPTOR = "authorization_interceptor"
+private const val BASE_AUTHORIZATION_INTERCEPTOR = "base_authorization_interceptor"
+private const val BASE_AUTHORIZATION_OK_HTTP = "base_authorization_ok_http"
+private const val BASE_AUTHORIZATION_RETROFIT = "base_authorization_retrofit"
+private const val AUTHORIZATION_OK_HTTP = "authorization_ok_http"
+private const val AUTHORIZATION_RETROFIT = "authorization_retrofit"
 private const val BASE_URL = "https://api.github.com/"
+private const val GRAPHQL_BASE_URL = "https://api.github.com/graphql"
 
 val networkModule = module {
 
-    single<Interceptor> {
+    single<Interceptor>(named(LOGGING_INTERCEPTOR)) {
         HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
     }
 
+    single<Interceptor>(named(AUTHORIZATION_INTERCEPTOR)) {
+        AuthorizationInterceptor(get())
+    }
+
+    single<Interceptor>(named(BASE_AUTHORIZATION_INTERCEPTOR)) {
+        BaseAuthorizationInterceptor()
+    }
+
     single<Json> { Json { ignoreUnknownKeys = true } }
 
-    single<OkHttpClient> {
+    single<OkHttpClient>(named(AUTHORIZATION_OK_HTTP)) {
         OkHttpClient.Builder()
-            .addInterceptor(get<Interceptor>())
+            .addInterceptor(get<Interceptor>(named(LOGGING_INTERCEPTOR)))
+            .addInterceptor(get<Interceptor>(named(AUTHORIZATION_INTERCEPTOR)))
+            .build()
+    }
+
+    single<OkHttpClient>(named(BASE_AUTHORIZATION_OK_HTTP)) {
+        OkHttpClient.Builder()
+            .addInterceptor(get<Interceptor>(named(LOGGING_INTERCEPTOR)))
+            .addInterceptor(get<Interceptor>(named(BASE_AUTHORIZATION_INTERCEPTOR)))
             .build()
     }
 
     single<ApolloClient> {
         ApolloClient.Builder()
-            .serverUrl("https://api.github.com/graphql")
-            .okHttpClient(get<OkHttpClient>())
+            .serverUrl(GRAPHQL_BASE_URL)
+            .okHttpClient(get<OkHttpClient>(named(AUTHORIZATION_OK_HTTP)))
             .build()
     }
 
-    single<Retrofit> {
+    single<Retrofit>(named(AUTHORIZATION_RETROFIT)) {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(get<OkHttpClient>())
+            .client(get<OkHttpClient>(named(AUTHORIZATION_OK_HTTP)))
             .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
             .build()
     }
 
-    single<StatisticsApi> { get<Retrofit>().create(StatisticsApi::class.java) }
+    single<Retrofit>(named(BASE_AUTHORIZATION_RETROFIT)) {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .client(get<OkHttpClient>(named(BASE_AUTHORIZATION_OK_HTTP)))
+            .addConverterFactory(get<Json>().asConverterFactory("application/json".toMediaType()))
+            .build()
+    }
+
+    single<StatisticsApi> { get<Retrofit>(named(AUTHORIZATION_RETROFIT)).create(StatisticsApi::class.java) }
+    single<AuthorisationApi> {
+        get<Retrofit>(named(BASE_AUTHORIZATION_RETROFIT)).create(
+            AuthorisationApi::class.java
+        )
+    }
 }

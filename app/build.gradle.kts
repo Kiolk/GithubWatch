@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.detekt)
     alias(libs.plugins.graphql)
+    kotlin("plugin.serialization") version "2.0.10"
 }
 
 detekt {
@@ -92,8 +93,10 @@ dependencies {
 
     implementation(libs.kotlinx.datetime)
 
-    implementation (libs.swiperefreshlayout)
-    implementation (libs.navigation.compose)
+    implementation(libs.swiperefreshlayout)
+    implementation(libs.navigation.compose)
+
+    implementation(libs.jjwt)
 
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.ui.test.junit4)
